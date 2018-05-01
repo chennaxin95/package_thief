@@ -8,11 +8,11 @@ import zipfile
 
 from collections import defaultdict
 from io import StringIO
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from PIL import Image
 
 # This is needed since the notebook is stored in the object_detection folder.
-# sys.path.append("..")
+sys.path.append("..")
 # from object_detection.utils import ops as utils_ops
 from utils import ops as utils_ops
 
@@ -37,15 +37,14 @@ PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 NUM_CLASSES = 90
 
-def get_model():
-	# already extracted
-	opener = urllib.request.URLopener()
-	opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
-	tar_file = tarfile.open(MODEL_FILE)
-	for file in tar_file.getmembers():
-		file_name = os.path.basename(file.name)
-		if 'frozen_inference_graph.pb' in file_name:
-			tar_file.extract(file, os.getcwd())
+# already extracted
+opener = urllib.request.URLopener()
+opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
+tar_file = tarfile.open(MODEL_FILE)
+for file in tar_file.getmembers():
+    file_name = os.path.basename(file.name)
+    if 'frozen_inference_graph.pb' in file_name:
+        tar_file.extract(file, os.getcwd())
 
 # loading tensorflow model 
 detection_graph = tf.Graph()
