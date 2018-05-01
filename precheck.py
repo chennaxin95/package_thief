@@ -6,14 +6,13 @@
 
 '''
 
-
 import numpy as np
 import cv2
 import os
 import time
 # import Image
 from object_detection.obj_detection import detect_obj
-
+from PIL import Image
 
 def createVideoFeeds():
 	image_folder = 'images'
@@ -30,6 +29,13 @@ def createVideoFeeds():
 	# return video
 
 
+def detect(image):
+	score, cat = detect_obj(image)
+	print score, cat
+    
+    
+### on MAC 
+### send image if not similar to previous
 def readVideoFrames(video):
 	# while 1: 
 	vidcap = cv2.VideoCapture(video)
@@ -38,18 +44,19 @@ def readVideoFrames(video):
 	success = True
 	previous = image
 	while success:
-    	# print(image)
+		print(image)
 		
 		# time.sleep(5) 
 		# cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file  
-		# detect_obj(image)
+		detect_obj(image)
 		success,image = vidcap.read()
 		if success:
-			# print(ifImageSimilar(previous, image))
-			print(detect_obj(image))
+			print(ifImageSimilar(previous, image))
+			score, cat = detect_obj(image)
+			print(score, cat)
 			# if not (ifImageSimilar(previous, image)):
 				# cv2.imwrite("frame-%d-1.jpg" % count, previous)
-    			# cv2.imwrite("frame-%d-2.jpg" % count, image)
+				# cv2.imwrite("frame-%d-2.jpg" % count, image)
 		previous = image
 		print('Read a new frame: ', success, count)
 		count += 1
@@ -70,7 +77,7 @@ def ifImageSimilar(img1, img2):
 	return (float(count)/float(gray_img1.shape[0]*gray_img1.shape[1])<0.1)
 
 
-
-previous = None
-readVideoFrames('video.avi')
+image_path = 'object_detection/test_images/image7.jpg'
+image = Image.open(image_path)
+detect(image_path)
 # def 
