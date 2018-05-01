@@ -123,40 +123,27 @@ TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(
 IMAGE_SIZE = (12, 8)
 
 
-def detect_obj():
+def detect_obj(image):
+	# for image_path in TEST_IMAGE_PATHS:
+	# image = Image.open(image_path)
+	# the array based representation of the image will be used later in order to prepare the
+	# result image with boxes and labels on it.
+	image_np = load_image_into_numpy_array(image)
+	# Expand dimensions since the model expects images to have shape: [1, None, None, 3]
+	image_np_expanded = np.expand_dims(image_np, axis=0)
+	# Actual detection.
+	output_dict = run_inference_for_single_image(image_np, detection_graph)
 
-	for image_path in TEST_IMAGE_PATHS:
-		image = Image.open(image_path)
-		# the array based representation of the image will be used later in order to prepare the
-		# result image with boxes and labels on it.
-		image_np = load_image_into_numpy_array(image)
-		# Expand dimensions since the model expects images to have shape: [1, None, None, 3]
-		image_np_expanded = np.expand_dims(image_np, axis=0)
-		# Actual detection.
-		output_dict = run_inference_for_single_image(image_np, detection_graph)
-
-		print(image_path)
-		#   print(len(output_dict['detection_boxes']))
-		#   print(output_dict['detection_classes'])
-		print(output_dict['detection_scores'][0])
-		#   print(output_dict)
-		print(category_index[output_dict['detection_classes'][0]]['name'])
-		print(output_dict['detection_boxes'].shape[0])
+	print(image_path)
+	#   print(len(output_dict['detection_boxes']))
+	#   print(output_dict['detection_classes'])
+	print(output_dict['detection_scores'][0])
+	#   print(output_dict)
+	print(category_index[output_dict['detection_classes'][0]]['name'])
+	print(output_dict['detection_boxes'].shape[0])
 	# min_score_thresh > 0.2 
 
-	# Visualization of the results of a detection.
-	# vis_util.visualize_boxes_and_labels_on_image_array(
-	# 	image_np,
-	# 	output_dict['detection_boxes'],
-	# 	output_dict['detection_classes'],
-	# 	output_dict['detection_scores'],
-	# 	category_index,
-	# 	instance_masks=output_dict.get('detection_masks'),
-	# 	use_normalized_coordinates=True,
-	# 	line_thickness=8)
-	# plt.figure(figsize=IMAGE_SIZE)
-	# plt.imshow(image_np)
-
+	
 
 
 

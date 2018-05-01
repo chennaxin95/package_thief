@@ -39,8 +39,8 @@ def send_alert(body):
 def save_img():
 	# 
 
-def detect_obj():
-	# 
+def detect():
+	detect_obj()
 
 
 def change_pkg_state(obj_detected, id):
