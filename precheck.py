@@ -12,7 +12,7 @@ import cv2
 import os
 import time
 # import Image
-from object_detection.obj_detection import detect_obj
+# from object_detection.obj_detection import detect_obj
 
 
 def createVideoFeeds():
@@ -45,8 +45,8 @@ def readVideoFrames(video):
 		# detect_obj(image)
 		success,image = vidcap.read()
 		if success:
-			# print(ifImageSimilar(previous, image))
-			print(detect_obj(image))
+			print(ifImageSimilar(previous, image))
+			# print(detect_obj(image))
 			# if not (ifImageSimilar(previous, image)):
 				# cv2.imwrite("frame-%d-1.jpg" % count, previous)
     			# cv2.imwrite("frame-%d-2.jpg" % count, image)
