@@ -40,7 +40,7 @@ def save_img():
 	# 
 
 def detect():
-	detect_obj()
+	if detect_obj
 
 
 def change_pkg_state(obj_detected, id):
