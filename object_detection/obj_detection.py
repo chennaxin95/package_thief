@@ -15,13 +15,7 @@ from PIL import Image
 sys.path.append("..")
 from object_detection.utils import ops as utils_ops
 
-if tf.__version__ < '1.4.0':
-    raise ImportError('Please upgrade your tensorflow installation to v1.4.* or later!')
-
-from utils import label_map_util
-
-from utils import visualization_utils as vis_util
-
+from object_detection.utils import label_map_util
 
 # What model to download.
 MODEL_NAME = 'ssd_mobilenet_v1_coco_2017_11_17'
@@ -61,14 +55,10 @@ label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 category_index = label_map_util.create_category_index(categories)
 
-def load_image_into_numpy_array(image):
-	(im_width, im_height) = image.size
-	return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
-
 
 def run_inference_for_single_image(image, graph):
 	print("======Inference=======")
-	print(image, type(graph))
+	# print(image, type(graph))
 	with graph.as_default():
 		with tf.Session() as sess:
 			# Get handles to input and output tensors
@@ -106,9 +96,6 @@ def run_inference_for_single_image(image, graph):
 				output_dict['detection_masks'] = output_dict['detection_masks'][0]
 	return output_dict
 
-
-
-
   # If you want to test the code with your images, just add path to the images to the TEST_IMAGE_PATHS.
 PATH_TO_TEST_IMAGES_DIR = 'test_images'
 TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 8) ]
@@ -117,28 +104,28 @@ TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(
 IMAGE_SIZE = (12, 8)
 
 
+def load_image_into_numpy_array(image):
+	(im_width, im_height) = image.size
+	return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
+
+
+
 def detect_obj(image_path):
 	# for image_path in TEST_IMAGE_PATHS:
 	image = Image.open(image_path)
 	# the array based representation of the image will be used later in order to prepare the
 	# result image with boxes and labels on it.
 	image_np = load_image_into_numpy_array(image)
+	print(image_np.shape)
+	# image_np = np.array(image).reshape((image.shape[1], image.shape[0], 3)).astype(np.uint8)
 	# Expand dimensions since the model expects images to have shape: [1, None, None, 3]
 	image_np_expanded = np.expand_dims(image_np, axis=0)
+	
 	# Actual detection.
-	output_dict = run_inference_for_single_image(image_np, detection_graph)
-
-	#print(image_path)
-    
-	#   print(len(output_dict['detection_boxes']))
-	#   print(output_dict['detection_classes'])
-	print(output_dict['detection_scores'][0])
+	output_dict = run_inference_for_single_image(image_np_expanded, detection_graph)
 	score = output_dict['detection_scores'][0]
 	#   print(output_dict)
-	print(category_index[output_dict['detection_classes'][0]]['name'])
 	cat = category_index[output_dict['detection_classes'][0]]['name']
-	print(output_dict['detection_boxes'].shape[0])
-    
 	# min_score_thresh > 0.2 
 	return score, cat
 
