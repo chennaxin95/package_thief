@@ -11,13 +11,12 @@ import cv2
 import os
 import time
 # import Image
-
 # from object_detection.obj_detection import detect_obj
 from PIL import Image
 from alexa import Alexa
 
-
-def createVideoFeeds():
+# generate fake video from images 
+def create_video():
 	image_folder = 'images'
 	video_name = 'video.avi'
 	images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
@@ -32,13 +31,14 @@ def createVideoFeeds():
 	# return video
 
 
+# (on alien) ummy function for detecting object
 def detect(image):
 	# score, cat = detect_obj(image)
 	# print score, cat
 	pass
     
     
-### on MAC 
+### (on MAC) 
 ### send image if not similar to previous
 def readVideoFrames(video, id):
 	# while 1: 

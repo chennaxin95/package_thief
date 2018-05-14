@@ -30,21 +30,22 @@ def take_img(body):
     print(np_img.shape)
 
 
-
+# send message to client
 def send_alert(body):
 	call = client.messages.create(from_='+12062033943',
                        to='+12064278603',
                        body='Ahoy from Twilio!')
  
+# save images from edge
 def save_img():
-	# 
-
-def detect():
-	if detect_obj
-
+    pass
+	
+# dummy function for detecting object at the backend 
+def detect_obj():
+    pass
 
 def change_pkg_state(obj_detected, id):
-	current_state = HOME_ID_STATE{id}
+    current_state = HOME_ID_STATE{id}
 	# if no_pkg
 	if current_state=='no_pkg':
 		if obj_detected:
