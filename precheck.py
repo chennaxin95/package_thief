@@ -12,6 +12,7 @@ import os
 import time
 # import Image
 # from object_detection.obj_detection import detect_obj
+
 from PIL import Image
 from alexa import Alexa
 
@@ -33,9 +34,8 @@ def create_video():
 
 # (on alien) ummy function for detecting object
 def detect(image):
-	# score, cat = detect_obj(image)
-	# print score, cat
-	pass
+	score, cat = detect_obj(image)
+	return score, cat
     
     
 ### (on MAC) 
@@ -56,14 +56,14 @@ def readVideoFrames(video, id):
 		# detect_obj(image)
 		success,image = vidcap.read()
 		if success:
-			# print(not ifImageSimilar(previous, image))
-			# print(detect_obj(image))
-			# score, cat = detect_obj(image)
-			# print(score, cat)
+			print(not ifImageSimilar(previous, image))
+			print(detect_obj(image))
+			score, cat = detect_obj(image)
+			print(score, cat)
 			##### create alexa to send data
 			# print(type(image))
 			if not (ifImageSimilar(previous, image)):
-				alexa.upload(image)
+				# alexa.upload(ima
 				print("uploaded")
 				# cv2.imwrite("frame-%d-1.jpg" % count, previous)
 				# cv2.imwrite("frame-%d-2.jpg" % count, image)
@@ -79,17 +79,19 @@ def ImageToArray(path):
 
 
 def ifImageSimilar(img1, img2):
-    	gray_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+	gray_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 	gray_img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 	diff = abs(gray_img1-gray_img2)
 	threshold = diff[ np.where( diff >= 1.0 ) ]
 	count = len(threshold)
 	return (float(count)/float(gray_img1.shape[0]*gray_img1.shape[1])<0.1)
 
+def load_image_into_numpy_array(image):
+	(im_width, im_height) = image.size
+	return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
 
 image_path = 'object_detection/test_images/image7.jpg'
-image = Image.open(image_path)
-detect(image_path)
+image = load_image_into_numpy_array(Image.open(image_path))
 
-readVideoFrames('video.avi', 123)
-# def 
+score, cat = detect(image_path)
+print(score, cat)
