@@ -7,14 +7,20 @@ import datetime
 import time
 
 class Alexa():
-    def __init__(self, id, url='http://cnx.ddns.net', port='8000', up_func='img_upload'):
+    def __init__(self, id, url='http://cnx.ddns.net', port='8000', up_func='img_upload',
+                 online_func='go_online'):
         self.url = url
         self.port = port
         self.address = url+':'+port
         self.up_func = up_func
+        self.online_func = online_func
         self.id = id
         self.previous_frame = None
         self.buffer = None
+
+    def go_online(self):
+        a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
+        print a
 
     def read_video(self, file_path):
         cap = cv2.VideoCapture(file_path)
@@ -36,10 +42,10 @@ class Alexa():
 
     def upload(self, frame):
         ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         info = {'id' : self.id,
                 'size' : frame.shape,
-                'time' : st }
+                'time' : stamp}
         a = requests.post('{}:{}/{}'.format(self.url, self.port, self.up_func), 
             files={'img':frame.tobytes(),
                     'info':json.dumps(info)})
