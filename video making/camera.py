@@ -7,7 +7,7 @@ import datetime
 import time
 
 class Camera():
-    def __init__(self, id, url='http://cnx.ddns.net', port='8000', up_func='img_upload',
+    def __init__(self, id, url='http://yiwei.ddns.me', port='8000', up_func='img_upload',
                  online_func='go_online'):
         self.url = url
         self.port = port
@@ -22,13 +22,27 @@ class Camera():
     def go_online(self):
         a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
         print a
-
-   
+        
+        
+    def send_random_video_frame(self, total_frame, fps):
+	'''
+            send frames to edge server at certain fps through API
+        '''
+	count = total_frame
+	wait_time = 1/float(fps)
+        image_folder = 'images'
+        images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
+        while total_frame > 0:
+            frame = random.choice(images)
+            for i in range(randint(8,20)):
+                self.upload(frame)
+                time.sleep(wait_time)
+                count-=1
 
     def upload(self, frame):
         ts = time.time()
         stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-        info = {'id' : self.id,
+        info = {'camera_id' : self.id,
                 'size' : frame.shape,
                 'time' : stamp}
         a = requests.post('{}:{}/{}'.format(self.url, self.port, self.up_func), 
@@ -36,20 +50,7 @@ class Camera():
                     'info':json.dumps(info)})
         print(a)
 
-    def imageDifferent(self, img1, img2, pixel_thresh=1, total_thresh=3.0):
-        '''
-        Assume input images size are the same
-        '''
-        diff = abs(img1-img2)
-        threshold = diff[ np.where( diff >= pixel_thresh ) ]
-        count = len(threshold)
-        result = float(count)/float(np.prod(img1.shape))
-        # print(result)
-        return (result > total_thresh)
-    
-
-
-    ########## no use #########
+   
     def stream(self, fps):
         # upload(frame) based on fps if frame is different than before
         i = 0

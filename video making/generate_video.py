@@ -1,20 +1,17 @@
-'''	For prechecking frames from video feeds in the edge server.
-	convert images into numpy array and preprocess it.
-	Check if current frame is similar to the last frame.
-	If yes, do nothing. Else, send it to backend server for 
-	objection detection.
-
-'''
-
 import numpy as np
 import cv2
 import os
 import time
+import random
+from random import randint
 
 
-def createVideoFeeds():
+def createVideoFeeds(name):
+    '''
+        create avi file/ pre-recored footage
+    '''
 	image_folder = 'images'
-	video_name = 'video.avi'
+	video_name = name
 	images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
 	frame = cv2.imread(os.path.join(image_folder, images[0]))
 	height, width, layers = frame.shape
@@ -25,9 +22,6 @@ def createVideoFeeds():
 	cv2.destroyAllWindows()
 	video.release()
 	# return video
-
-
-def sendVideoFrameRandomly():
 	
 
 def readVideoFrames(video):
@@ -64,7 +58,7 @@ def ifImageSimilar(img1, img2):
 
 
 
-readVideoFrames('video.avi')
+createVideoFeeds("video.avi")
 
 
 # def 
