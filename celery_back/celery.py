@@ -1,6 +1,6 @@
 from celery import Celery
 
-app = Celery('celery_back', borker='redis://package_thief@localhost:6379',
+app = Celery('celery_back', borker='redis://package_thief@cnx.ddns.net:6379',
             task_serializer='pickle', result_serializer='pickle')
 
 app.conf.task_serializer = 'pickle'
