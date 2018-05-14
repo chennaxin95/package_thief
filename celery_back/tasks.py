@@ -22,11 +22,9 @@ rdsdb = redis.Redis(host='localhost',
                     password='package_thief')
 
 @app.task
-def take_img(body):
+def take_img(img, info):
     # cli_id = int(cli_id)
-    img = body['img']
-    np_img = np.frombuffer(img, dtype=np.int8)
-    info = json.loads(body['info'].decode('utf8'))
+    np_img = np.asarray(img)
     shape = info['size']
     print('incoming image from : {}'.format(info['id']))
     np_img = np_img.reshape(shape)

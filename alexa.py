@@ -5,6 +5,7 @@ import requests
 from io import StringIO
 import datetime
 import time
+from celery import Celery
 
 class Alexa():
     def __init__(self, id, url='http://cnx.ddns.net', port='8000', up_func='img_upload',
@@ -17,11 +18,20 @@ class Alexa():
         self.id = id
         self.previous_frame = None
         self.buffer = None
-
+        self.celery = Celery()
+        self.celery.config_from_object('celery_back.celery')
 
     def go_online(self):
         a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
-        print a
+        print(a)
+
+    def upload_celery(self, frame):
+        ts = time.time()
+        stamp = datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        info = {'id' : self.id,
+                'size' : frame.shape,
+                'time' : stamp}
+        self.celery.send_task('celery_back.tasks.take_img', (frame.tolist(), info))
 
     def read_video(self, file_path):
         cap = cv2.VideoCapture(file_path)
