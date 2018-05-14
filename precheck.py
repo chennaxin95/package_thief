@@ -10,13 +10,14 @@ import numpy as np
 import cv2
 import os
 import time
+# import Image
+# from object_detection.obj_detection import detect_obj
 
-from object_detection.obj_detection import detect_obj
 from PIL import Image
 from alexa import Alexa
 
-
-def createVideoFeeds():
+# generate fake video from images 
+def create_video():
 	image_folder = 'images'
 	video_name = 'video.avi'
 	images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
@@ -31,50 +32,34 @@ def createVideoFeeds():
 	# return video
 
 
+# (on alien) ummy function for detecting object
 def detect(image):
 	score, cat = detect_obj(image)
 	return score, cat
     
     
-### on MAC 
+### (on MAC) 
 ### send image if not similar to previous
 def readVideoFrames(video, id):
-	# while 1: 
 	vidcap = cv2.VideoCapture(video)
 	success,image = vidcap.read()
-	count = 0
 	success = True
 	previous = image
 	alexa = Alexa(id)
+	alexa.go_online()
 	while success:
-		# print(image)
-		
-		# time.sleep(5) 
-		# cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file  
-		# detect_obj(image)
+		print("sending")
+		time.sleep(1000/24)
 		success,image = vidcap.read()
 		if success:
-			print(not ifImageSimilar(previous, image))
-			print(detect_obj(image))
-			score, cat = detect_obj(image)
-			print(score, cat)
-			##### create alexa to send data
-			# print(type(image))
 			if not (ifImageSimilar(previous, image)):
-				# alexa.upload(ima
-				print("uploaded")
-				# cv2.imwrite("frame-%d-1.jpg" % count, previous)
-				# cv2.imwrite("frame-%d-2.jpg" % count, image)
+				alexa.upload(image.astype(np.uint8))
 		previous = image
-		# print('Read a new frame: ', success, count)
-		count += 1
-
 
 def ImageToArray(path):
 	image_path = os.path.join(path)
 	image = Image.open(image_path)
 	return np.array(image)
-
 
 def ifImageSimilar(img1, img2):
 	gray_img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
@@ -87,9 +72,3 @@ def ifImageSimilar(img1, img2):
 def load_image_into_numpy_array(image):
 	(im_width, im_height) = image.size
 	return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
-
-image_path = 'object_detection/test_images/image7.jpg'
-image = load_image_into_numpy_array(Image.open(image_path))
-
-score, cat = detect(image_path)
-print(score, cat)

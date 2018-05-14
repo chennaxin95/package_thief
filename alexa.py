@@ -18,6 +18,7 @@ class Alexa():
         self.previous_frame = None
         self.buffer = None
 
+
     def go_online(self):
         a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
         print a
@@ -62,20 +63,21 @@ class Alexa():
         # print(result)
         return (result > total_thresh)
     
-    def stream(self, fps):
-        # upload(frame) based on fps if frame is different than before
-        i = 0
-        while not (self.buffer is None):
-            for frame in self.buffer: 
-                if self.previous_frame is None:
-                    self.previous_frame = frame
-                else:
-                    if self.imageDifferent(self.previous_frame, frame):
-                        print(self.imageDifferent(self.previous_frame,frame))
-                        self.upload(frame)
-                        self.previous_frame = frame
-                time.sleep(1.0/float(fps))
-                # print(i)
-                i+=1
-            self.buffer = None
-            i = 0
+    # no use
+    # def stream(self, fps):
+    #     # upload(frame) based on fps if frame is different than before
+    #     i = 0
+    #     while not (self.buffer is None):
+    #         for frame in self.buffer: 
+    #             if self.previous_frame is None:
+    #                 self.previous_frame = frame
+    #             else:
+    #                 if self.imageDifferent(self.previous_frame, frame):
+    #                     print(self.imageDifferent(self.previous_frame,frame))
+    #                     self.upload(frame)
+    #                     self.previous_frame = frame
+    #             time.sleep(1.0/float(fps))
+    #             # print(i)
+    #             i+=1
+    #         self.buffer = None
+    #         i = 0
