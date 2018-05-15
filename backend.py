@@ -27,6 +27,7 @@ account_sid = 'AC59f219f50e0c807bbef4a098e80cb22f'
 auth_token = '25628f4df2124f081c048d95e9e1d98a'
 client = Client(account_sid, auth_token)
 PKG_STATE = ['no_pkg', 'yes_pkg']
+HOUSE_LIST = 'houses'
 
 # Setting up redis
 rdsdb = redis.Redis(host=args.redis_host,
@@ -51,13 +52,37 @@ def take_img(body):
     change_pkg_state(detect(np_img), info['id'])
 
 @hug.post('/go_online')
-def admission(id):
-    rdsdb.set(str(id)+'_status', '0')
+def admission(house_id):
+    rdsdb.set(str(house_id)+'_status', '0')
+    rdsdb.rpush(HOUSE_LIST, house_id)
+
+@hug.post('/change_status')
+def change(house_id):
+    status_str = str(house_id)+'_status'
+    cur_state = rdsdb.get(status_str).decode('ascii')
+    if cur_state == '1':
+        rdsdb.set(status_str, '0')
+    else:
+        rdsdb.set(status_str, '1')
 
 @hug.get('/info')
 def get_info(house_id):
+    status_str = str(house_id)+'_status'
+    # return 
     return {'house_id': house_id,
-            'img_id': str(uuid4())}
+            'img_id': str(rdsdb.lrange(house_id, 0, -1)[-1]),
+            'house_status' : rdsdb.get(status_str)}
+
+@hug.get('/all_house')
+def get_all_house():
+    print(rdsdb.lrange(HOUSE_LIST, 0, -1))
+    return {'all' : rdsdb.lrange(HOUSE_LIST, 0, -1)}
+
+@hug.get('/last_image', output=hug.output_format.file)
+def get_last(house_id):
+    img_lst = rdsdb.lrange(house_id, 0, -1)
+    img_path = rdsdb.get(img_lst[-1])
+    return img_path.decode('utf-8')
 
 def save_img(house_id, img):
     img_uuid = uuid4()
@@ -89,11 +114,10 @@ def change_pkg_state(obj_detected, id):
     else:
         raise ValueError('id {} is not online in redis'.format(id))
 
-
 def send_alert(body):
     call = client.messages.create(from_='+12062033943',
                                   to='+12064278603',
-                                  body='Ahoy from Twilio!')
+                                  body='Your package might be stolen')
     return call
 
 if __name__ == '__main__':
