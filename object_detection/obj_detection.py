@@ -28,6 +28,8 @@ PATH_TO_LABELS = os.path.join('object_detection','data', 'mscoco_label_map.pbtxt
 
 NUM_CLASSES = 90
 
+tf.logging.set_verbosity(tf.logging.FATAL)
+
 def init_model():
 	opener = urllib.request.URLopener()
 	opener.retrieve(DOWNLOAD_BASE + MODEL_FILE, MODEL_FILE)
@@ -56,7 +58,6 @@ class Detector():
 		self.category_index = label_map_util.create_category_index(self.categories)
 
 	def run_inference_for_single_image(self, image):
-		print("======Inference=======")
 		with self.detection_graph.as_default():
 			with tf.Session() as sess:
 				# Get handles to input and output tensors
