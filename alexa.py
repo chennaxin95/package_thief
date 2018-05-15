@@ -19,11 +19,11 @@ class Alexa():
         self.previous_frame = None
         self.buffer = None
         self.celery = Celery()
-        self.celery.config_from_object('celery_back.celery')
+        self.celery = Celery('celery_back', broker='redis://:package_thief@cnx.ddns.net:6379',
+            task_serializer='pickle', result_serializer='pickle')
 
     def go_online(self):
         a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
-        print(a)
 
     def upload_celery(self, frame):
         ts = time.time()

@@ -5,6 +5,8 @@ import requests
 from io import StringIO
 import datetime
 import time
+import os
+import random
 
 class Camera():
     def __init__(self, id, url='http://yiwei.ddns.me', port='8000', up_func='img_upload',
@@ -29,7 +31,7 @@ class Camera():
             send frames to edge server at certain fps through API
         '''
 	count = total_frame
-	wait_time = 1/float(fps)
+	wait_time = 1.0/float(fps)
         image_folder = 'images'
         images = [img for img in os.listdir(image_folder) if img.endswith(".png")]
         while total_frame > 0:
@@ -38,6 +40,14 @@ class Camera():
                 self.upload(frame)
                 time.sleep(wait_time)
                 count-=1
+
+    def send_one_frame(self, package=false ):
+        image_folder = 'images'
+        if package:
+            
+            return 
+        else:
+            return
 
     def upload(self, frame):
         ts = time.time()
@@ -69,7 +79,7 @@ class Camera():
             self.buffer = None
             i = 0
 
-     def read_video(self, file_path):
+    def read_video(self, file_path):
         cap = cv2.VideoCapture(file_path)
         frameCount = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         frameWidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))

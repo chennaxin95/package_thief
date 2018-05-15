@@ -40,21 +40,25 @@ def detect(image):
     
 ### (on MAC) 
 ### send image if not similar to previous
-def readVideoFrames(video, id):
+def stream_alexa(video, id, fps=24):
 	vidcap = cv2.VideoCapture(video)
 	success,image = vidcap.read()
 	success = True
 	previous = image
 	alexa = Alexa(id)
 	alexa.go_online()
+	count = 0
+	uploads = 0
 	while success:
-		print("sending")
-		time.sleep(1000/24)
+		count += 1
 		success,image = vidcap.read()
+		time.sleep(1./fps)
 		if success:
-			if not (ifImageSimilar(previous, image)):
-				alexa.upload(image.astype(np.uint8))
+			if not ifImageSimilar(previous, image):
+				alexa.upload_celery(image.astype(np.uint8))
+				uploads += 1
 		previous = image
+	return count, uploads
 
 def ImageToArray(path):
 	image_path = os.path.join(path)
