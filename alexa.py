@@ -23,7 +23,7 @@ class Alexa():
             task_serializer='pickle', result_serializer='pickle')
 
     def go_online(self):
-        a = requests.post('{}:{}/{}?id={}'.format(self.url, self.port, self.online_func, self.id))
+        a = requests.post('{}:{}/{}?house_id={}'.format(self.url, self.port, self.online_func, self.id))
 
     def upload_celery(self, frame):
         ts = time.time()

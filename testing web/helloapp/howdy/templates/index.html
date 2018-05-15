@@ -14,7 +14,7 @@
         <div class="container d-flex justify-content-between">
           <a href="#" class="navbar-brand d-flex align-items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-            <strong>House Monitor</strong>
+            <strong>Package Monitor</strong>
           </a>
         </div>
       </div>
@@ -26,7 +26,7 @@
 {% block content %}
 		
 
-		<h2>House {{ip}}</h2>
+		<h2>House {{house_id}}</h2>
 		<!-- <a href="/about/">About Me</a> -->
 		
 <!-- <h2>{{ request.get_full_path }}</h2> -->
@@ -38,11 +38,11 @@
         ...
         <th>Field N</th>
     </tr>
-    {% for item in query_results %}
+    {% for item in all %}
     <tr> 
         <td>{{ item.field1 }}</td>
         ...
-        <td>{{ item.fieldN }}</td>
+        <td><a href="http://cnx.ddns.net:8000/">{{ item }}</td>
     </tr>
     {% endfor %}
 </table> -->
@@ -50,32 +50,34 @@
 
  		 <table style="width:100%">
 		  <tr>
-		    <th>name</th>
 		    <th>id</th> 
-		    <th>image</th>
+		    <th>current status</th>
+		    <th>last frame</th>
+		    <th>change status</th>
+		    
+		    <th>report</th>
 		  </tr>
 		  <tr>
-		    <td>Jill</td>
-		    <td>{{ ip }}</td> 
-		    <td>{{ country }}</td>
+		    <td>{{ house_id }}</td> 
+		   	<td>{{ status }}</td>
+		    <td><img src="../static/images/{{house_id}}.png" alt="last frame" height="100" width="100"></td> 
+	
+		    <td>
+
+			 <a href="/report/change_status?house_id={{house_id}}"><button type="submit">Change</button></a>
+		    </td>
+		    <td> 
+		    	<form action="/reprot/house_id={{house_id}}" method="post">
+			<input id="team_name" type="text" name="name_field" value="">
+			<input type="submit" value="Submit">
+		</form> 
+	</td>
 		  </tr>
-		  <tr>
-		    <td>Eve</td>
-		    <td>{{ ip }}</td> 
-		    <td>{{ country }}</td>
-		  </tr>
+		
 		</table>
+  	
 
-
-
-		<!-- <form action="/team_name_url/" method="post">
-			<label for="team_name">Report problem </label>
-			<input id="team_name" type="text" name="name_field" value="Default name for team.">
-			<input type="submit" value="OK">
-	</form> -->
-  		<!-- <p>Your ip address is <strong>{{ ip }}</strong>, and you are probably in <strong>{{ country }}</strong> right now.</p>
-
- -->
+ 		<a href="/all_house/">Back to all houses</a>
 
 		{% endblock %}
 	</div>
